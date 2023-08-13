@@ -1,9 +1,16 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import "./styles/app.css";
+import GloblaLayout from "./components/layouts/GlobalLayout";
+import Reservations from "./features/reservations/Reservations";
 
 function App() {
-  return <Routes></Routes>;
+  return (
+    <Routes>
+      <Route path="/" element={<GloblaLayout />}>
+        <Route index element={<Reservations />} />
+      </Route>
+    </Routes>
+  );
 }
 
 export default App;

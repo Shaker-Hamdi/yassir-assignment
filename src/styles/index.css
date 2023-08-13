@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body,
+  html,
+  #root {
+    @apply h-full overflow-hidden;
+  }
+
+  body {
+    scrollbar-gutter: auto;
+    @apply bg-gray-100 font-english text-base text-gray-700 antialiased;
+  }
+
+  body::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  body::-webkit-scrollbar-thumb {
+    @apply rounded-3xl bg-gray-400;
+  }
+
+  body::-webkit-scrollbar-track {
+    @apply rounded-3xl bg-gray-200;
+  }
+}
