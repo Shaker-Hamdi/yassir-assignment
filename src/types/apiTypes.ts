@@ -17,3 +17,14 @@ export type Reservation = {
 export type ReservationsResponse = {
   [key: string | "reservations"]: Reservation[];
 };
+
+export type FilterCriteria = {
+  status: string[];
+  selectedDate: string | null;
+  shifts: string[];
+  areas: string[];
+};
+
+export type MetadataObj = {
+  [key: string]: any;
+};

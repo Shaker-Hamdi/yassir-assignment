@@ -61,11 +61,9 @@ const Pagination: React.FC<Iprops> = ({
         <button
           onClick={() => paginate(1)}
           disabled={currentPage === 1}
-          className={clsx(
-            "flex h-9 items-center px-1 text-[15px] font-bold text-gray-900 hover:text-gray-500 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent",
-          )}
+          className={buttonStyles}
         >
-          First
+          <Icon iconName="keyboard_double_arrow_left" />
         </button>
       </li>
       <li className="ml-1">
@@ -74,7 +72,7 @@ const Pagination: React.FC<Iprops> = ({
           disabled={currentPage === 1}
           className={buttonStyles}
         >
-          <Icon iconName="keyboard_double_arrow_left" />
+          <Icon iconName="keyboard_arrow_left" />
         </button>
       </li>
       {pager.map(number => {
@@ -97,18 +95,16 @@ const Pagination: React.FC<Iprops> = ({
           disabled={currentPage === lastPage}
           className={buttonStyles}
         >
-          <Icon iconName="keyboard_double_arrow_right" />
+          <Icon iconName="keyboard_arrow_right" />
         </button>
       </li>
       <li className="ml-1">
         <button
           onClick={() => paginate(lastPage)}
           disabled={currentPage === lastPage}
-          className={clsx(
-            "flex h-9 items-center px-1 text-[15px] font-bold text-gray-900 hover:text-gray-500 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent",
-          )}
+          className={buttonStyles}
         >
-          Last
+          <Icon iconName="keyboard_double_arrow_right" />
         </button>
       </li>
     </ul>
