@@ -1,4 +1,7 @@
+import clsx from "clsx";
 import React from "react";
+
+import Icon from "../../components/ui/Icon";
 
 type Iprops = {
   onSearchChange: (searchTerm: string) => void;
@@ -20,18 +23,23 @@ const ReservationSearch: React.FC<Iprops> = ({
   };
 
   return (
-    <div>
-      <label>
-        Search:
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSortChange}
-          placeholder="Search by customer name ..."
-        />
-      </label>
+    <div className={clsx("relative flex-1")}>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleSortChange}
+        placeholder="Search by customer name ..."
+        className={clsx("w-full")}
+      />
 
-      <button onClick={handleClearSearch}>X</button>
+      {searchTerm && (
+        <button
+          onClick={handleClearSearch}
+          className="absolute right-0 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center text-gray-400"
+        >
+          <Icon iconName="close" />
+        </button>
+      )}
     </div>
   );
 };

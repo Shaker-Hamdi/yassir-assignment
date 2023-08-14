@@ -1,7 +1,0 @@
-type Iprops = {};
-
-const Footer: React.FC<Iprops> = () => {
-  return <div>This is a footer</div>;
-};
-
-export default Footer;

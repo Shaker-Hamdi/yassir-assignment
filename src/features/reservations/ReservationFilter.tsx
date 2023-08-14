@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { useState } from "react";
 
 import Icon from "../../components/ui/Icon";
+import InputCheckbox from "../../components/ui/InputCheckbox";
 
 type Iprops = {
   onSubmit: (filters: any) => void;
@@ -62,80 +63,104 @@ const ReservationFilter: React.FC<Iprops> = ({ onSubmit }) => {
     <>
       <Popover.Root>
         <Popover.Trigger asChild>
-          <button aria-label="Update dimensions">
+          <button
+            aria-label="Update dimensions"
+            className={clsx(
+              "flex h-14 w-14 items-center justify-center rounded-full border border-violet-600 bg-violet-600 text-white transition hover:bg-white hover:text-violet-600",
+            )}
+          >
             <Icon iconName="filter_alt" />
           </button>
         </Popover.Trigger>
         <Popover.Content
           className={clsx("rounded-xl bg-white p-5 shadow-md")}
           sideOffset={5}
+          align="end"
         >
           <form onSubmit={handleSubmit}>
-            <div>
-              <h3>Status</h3>
+            <div className={clsx("mb-5")}>
+              <h3 className={clsx("mb-2 text-lg font-medium text-violet-600")}>
+                Status
+              </h3>
               {statusFilterOptions.map(status => (
-                <label key={status}>
-                  {status}
-                  <input
-                    type="checkbox"
-                    checked={statusFilters.includes(status)}
-                    onChange={() =>
-                      handleCheckboxChange(
-                        status,
-                        statusFilters,
-                        setStatusFilters,
-                      )
-                    }
-                  />
-                </label>
+                <InputCheckbox
+                  key={status}
+                  id={`filter_${status}`}
+                  checked={statusFilters.includes(status)}
+                  label={status.toLowerCase()}
+                  onChangeHandler={() =>
+                    handleCheckboxChange(
+                      status,
+                      statusFilters,
+                      setStatusFilters,
+                    )
+                  }
+                  wrapperClassName={clsx("mb-1 last:mb-0")}
+                />
               ))}
             </div>
 
-            <div>
-              <h3>Shifts</h3>
+            <div className={clsx("mb-5")}>
+              <h3 className={clsx("mb-2 text-lg font-medium text-violet-600")}>
+                Shifts
+              </h3>
               {shiftFilterOptions.map(shift => (
-                <label key={shift}>
-                  {shift}
-                  <input
-                    type="checkbox"
-                    checked={shiftFilters.includes(shift)}
-                    onChange={() =>
-                      handleCheckboxChange(shift, shiftFilters, setShiftFilters)
-                    }
-                  />
-                </label>
+                <InputCheckbox
+                  key={shift}
+                  id={`filter_${shift}`}
+                  checked={shiftFilters.includes(shift)}
+                  label={shift.toLowerCase()}
+                  onChangeHandler={() =>
+                    handleCheckboxChange(shift, shiftFilters, setShiftFilters)
+                  }
+                  wrapperClassName={clsx("mb-1 last:mb-0")}
+                />
               ))}
             </div>
 
-            <div>
-              <h3>Area</h3>
+            <div className={clsx("mb-5")}>
+              <h3 className={clsx("mb-2 text-lg font-medium text-violet-600")}>
+                Area
+              </h3>
               {areFilterOptions.map(area => (
-                <label key={area}>
-                  {area}
-                  <input
-                    type="checkbox"
-                    checked={areaFilters.includes(area)}
-                    onChange={() =>
-                      handleCheckboxChange(area, areaFilters, setAreaFilters)
-                    }
-                  />
-                </label>
+                <InputCheckbox
+                  key={area}
+                  id={`filter_${area}`}
+                  checked={areaFilters.includes(area)}
+                  label={area.toLowerCase()}
+                  onChangeHandler={() =>
+                    handleCheckboxChange(area, areaFilters, setAreaFilters)
+                  }
+                  wrapperClassName={clsx("mb-1 last:mb-0")}
+                />
               ))}
             </div>
 
             <div>
-              <h3>Reservation Day</h3>
+              <h3 className={clsx("mb-2 text-lg font-medium text-violet-600")}>
+                Reservation Day
+              </h3>
               <input
                 type="date"
                 value={selectedDate || ""}
                 onChange={e => setSelectedDate(e.target.value)}
+                className={clsx("w-full min-w-[300px]")}
               />
             </div>
 
-            <button type="submit">Apply Filters</button>
-            <button type="button" onClick={handleClearFilters}>
-              Clear Filters
-            </button>
+            <div className={clsx("mt-5 flex items-center justify-end gap-3")}>
+              <button type="button" onClick={handleClearFilters}>
+                Clear Filters
+              </button>
+              <button
+                type="submit"
+                className={clsx(
+                  "flex h-11 items-center justify-center rounded-xl border border-violet-600 bg-violet-600 px-3 text-center text-white transition hover:bg-white hover:text-violet-600",
+                )}
+              >
+                Apply Filters
+              </button>
+            </div>
           </form>
           <Popover.Close aria-label="Close">
             <Icon iconName="close" />

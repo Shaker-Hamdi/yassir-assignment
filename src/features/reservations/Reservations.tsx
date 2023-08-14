@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { format, parse, set } from "date-fns";
 import { useEffect, useState } from "react";
 
@@ -19,6 +20,7 @@ const Reservations: React.FC<Iprops> = () => {
   const [appliedSearch, setAppliedSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [reservationsPerPage, setReservationsPerPage] = useState<number>(5);
+  const [resetSort, setResetSort] = useState<boolean>(false);
 
   const { data, isLoading, isSuccess } = useGetReservationsListQuery();
 
@@ -44,6 +46,10 @@ const Reservations: React.FC<Iprops> = () => {
 
     // Apply filters
     if (!isEmpty(filters)) {
+      // setResetSort(true);
+      console.log("Here in filtering");
+      console.log(filteredReservations);
+
       filteredReservations = filteredReservations.filter(
         (reservation: MetadataObj) => {
           return Object.keys(filters).every(key => {
@@ -72,6 +78,11 @@ const Reservations: React.FC<Iprops> = () => {
 
       setAppliedFilters(filters);
       setReservations(filteredReservations);
+
+      //If search is applied, re-apply it when filters are applied
+      if (appliedSearch) {
+        handleSearchChange(appliedSearch);
+      }
     }
 
     //Apply the search when clearing the filter
@@ -127,13 +138,14 @@ const Reservations: React.FC<Iprops> = () => {
     } else {
       //Clear search
       setAppliedSearch("");
+      setReservations(data);
 
       if (!isEmpty(appliedFilters)) {
+        console.log("Hereeeeeeeeeeeeeeeeeeeeee", appliedFilters);
         //If filters are applied, re-apply them when search is cleared
         handleFilterSubmit(appliedFilters);
       } else {
         //Otherwise, just set the reservations to the original data
-        setReservations(data);
       }
     }
   };
@@ -141,22 +153,28 @@ const Reservations: React.FC<Iprops> = () => {
   return (
     <>
       {isLoading ? (
-        <div className="absolute bottom-0 left-0 right-0 top-0 z-10 h-full w-full bg-white bg-opacity-70">
+        <div
+          className={clsx(
+            "absolute bottom-0 left-0 right-0 top-0 z-10 h-full w-full",
+          )}
+        >
           <LoadingSpinner />
         </div>
       ) : (
-        <section>
-          <div>
-            <div>
-              <ReservationFilter onSubmit={handleFilterSubmit} />
-            </div>
-            <div>
-              <ReservationSort onSortSubmit={handleSortSubmit} />
-            </div>
-            <div>
-              <ReservationSearch onSearchChange={handleSearchChange} />
-            </div>
+        <section className={clsx("flex flex-col")}>
+          <div
+            className={clsx(
+              "mt-5 flex items-center gap-5 rounded-xl bg-white p-5 shadow-sm",
+            )}
+          >
+            <ReservationSearch onSearchChange={handleSearchChange} />
+            <ReservationSort
+              onSortSubmit={handleSortSubmit}
+              resetSort={resetSort}
+            />
+            <ReservationFilter onSubmit={handleFilterSubmit} />
           </div>
+
           <ReservationsList reservations={currentReservations} />
           <Pagination
             currentPage={currentPage}

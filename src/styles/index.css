@@ -3,6 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  [type="text"],
+  [type="email"],
+  [type="url"],
+  [type="password"],
+  [type="number"],
+  [type="date"],
+  [type="datetime-local"],
+  [type="month"],
+  [type="search"],
+  [type="tel"],
+  [type="time"],
+  [type="week"],
+  [multiple],
+  textarea,
+  select {
+    @apply h-14 rounded-2xl border-gray-100 bg-gray-100 placeholder-gray-300 focus:border-violet-700 focus:outline-none focus:ring-0;
+  }
+
+  [type="checkbox"],
+  [type="radio"] {
+    @apply h-5 w-5 cursor-pointer rounded-md border border-gray-400 text-violet-600 focus:outline-none focus:ring-0 focus:ring-offset-0;
+  }
+
   body,
   html,
   #root {

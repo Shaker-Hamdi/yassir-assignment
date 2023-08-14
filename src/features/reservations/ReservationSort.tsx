@@ -1,10 +1,12 @@
+import clsx from "clsx";
 import React from "react";
 
 type Iprops = {
   onSortSubmit: (sortBy: string, sortOrder: string) => void;
+  resetSort?: boolean;
 };
 
-const ReservationSort: React.FC<Iprops> = ({ onSortSubmit }) => {
+const ReservationSort: React.FC<Iprops> = ({ onSortSubmit, resetSort }) => {
   const [sortOption, setSortOption] = React.useState<string>(""); // Format: "<sortBy>-<sortOrder>"
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -13,18 +15,21 @@ const ReservationSort: React.FC<Iprops> = ({ onSortSubmit }) => {
     onSortSubmit(sortBy, sortOrder);
   };
 
+  React.useEffect(() => {
+    if (resetSort) {
+      setSortOption("");
+    }
+  }, [resetSort]);
+
   return (
-    <div>
-      <label>
-        Sort by:
-        <select value={sortOption} onChange={handleSortChange}>
-          <option value="">Select...</option>
-          <option value="quantity-asc">Quantity (Ascending)</option>
-          <option value="quantity-desc">Quantity (Descending)</option>
-          <option value="customer-asc">Customer (Ascending)</option>
-          <option value="customer-desc">Customer (Descending)</option>
-        </select>
-      </label>
+    <div className={clsx("")}>
+      <select value={sortOption} onChange={handleSortChange}>
+        <option value="">Sort By ...</option>
+        <option value="quantity-asc">Quantity (Ascending)</option>
+        <option value="quantity-desc">Quantity (Descending)</option>
+        <option value="customer-asc">Customer (Ascending)</option>
+        <option value="customer-desc">Customer (Descending)</option>
+      </select>
     </div>
   );
 };
