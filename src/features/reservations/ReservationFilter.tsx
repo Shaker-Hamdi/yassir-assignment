@@ -40,12 +40,7 @@ const ReservationFilter: React.FC<Iprops> = ({ onSubmit }) => {
     setSelectedDate(null);
     setShiftFilters([]);
     setAreaFilters([]);
-    onSubmit({
-      status: [],
-      businessDate: null,
-      shift: [],
-      area: [],
-    });
+    onSubmit({});
   };
 
   return (

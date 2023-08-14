@@ -1,9 +1,10 @@
-import { format, parse } from "date-fns";
+import { format, parse, set } from "date-fns";
 import { useEffect, useState } from "react";
 
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Pagination from "../../components/ui/Pagination";
 import { MetadataObj, Reservation } from "../../types/apiTypes";
+import { isEmpty } from "../../utils/helpers";
 import ReservationFilter from "./ReservationFilter";
 import ReservationSearch from "./ReservationSearch";
 import ReservationSort from "./ReservationSort";
@@ -14,7 +15,8 @@ type Iprops = {};
 
 const Reservations: React.FC<Iprops> = () => {
   const [reservations, setReservations] = useState<Reservation[]>();
-  const [appliedFilters, setAppliedFilters] = useState<MetadataObj>();
+  const [appliedFilters, setAppliedFilters] = useState<MetadataObj>({});
+  const [appliedSearch, setAppliedSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [reservationsPerPage, setReservationsPerPage] = useState<number>(5);
   const [sortCriteria, setSortCriteria] = useState<string>("");
@@ -28,12 +30,11 @@ const Reservations: React.FC<Iprops> = () => {
     }
   }, [data, isSuccess]);
 
-  useEffect(() => {
-    // Initial filtering and sorting when component mounts
-    // Aslo runs when sortCriteria changes and passes the appliedFilters
-    // to sort the filtered reservations if filters are applied
-    handleFilterSubmit(appliedFilters || {});
-  }, [sortCriteria]);
+  // useEffect(() => {
+  //   // This runs on mount and when sortCriteria changes
+  //   // It passes the appliedFilters to sort the filtered reservations if filters are applied
+  //   handleFilterSubmit(appliedFilters);
+  // }, [sortCriteria]);
 
   const indexOfLastReservation = currentPage * reservationsPerPage;
   const indexOfFirstReservation = indexOfLastReservation - reservationsPerPage;
@@ -49,37 +50,55 @@ const Reservations: React.FC<Iprops> = () => {
     let filteredReservations = data || [];
 
     // Apply filters
-    filteredReservations = filteredReservations.filter(
-      (reservation: MetadataObj) => {
-        return Object.keys(filters).every(key => {
-          const filterValues = filters[key];
+    if (!isEmpty(filters)) {
+      filteredReservations = filteredReservations.filter(
+        (reservation: MetadataObj) => {
+          return Object.keys(filters).every(key => {
+            const filterValues = filters[key];
 
-          if (key === "businessDate" && filterValues) {
-            const [year, month, day] = filterValues.split("-").map(Number);
-            const selectedDate = new Date(year, month - 1, day); // Month is zero-based
-            const reservationDate = parse(
-              reservation[key],
-              "dd.MM.yyyy",
-              new Date(),
-            );
-            return (
-              format(reservationDate, "yyyy-MM-dd") ===
-              format(selectedDate, "yyyy-MM-dd")
-            );
-          } else if (filterValues && filterValues.length > 0) {
-            return filterValues.includes(reservation[key]);
-          }
+            if (key === "businessDate" && filterValues) {
+              const [year, month, day] = filterValues.split("-").map(Number);
+              const selectedDate = new Date(year, month - 1, day); // Month is zero-based
+              const reservationDate = parse(
+                reservation[key],
+                "dd.MM.yyyy",
+                new Date(),
+              );
+              return (
+                format(reservationDate, "yyyy-MM-dd") ===
+                format(selectedDate, "yyyy-MM-dd")
+              );
+            } else if (filterValues && filterValues.length > 0) {
+              return filterValues.includes(reservation[key]);
+            }
 
-          return true; // Default to true for keys without filters
-        });
-      },
-    );
+            return true; // Default to true for keys without filters
+          });
+        },
+      );
 
-    // Apply sorting based on sortCriteria
-    if (sortCriteria) {
-      console.log("Yes, there's a sort criteria");
-      const [sortBy, sortOrder] = sortCriteria.split("-");
-      filteredReservations = filteredReservations.sort((a: any, b: any) => {
+      setAppliedFilters(filters);
+      setReservations(filteredReservations);
+    }
+
+    //Apply the search when clearing the filter
+    if (isEmpty(filters) && appliedSearch) {
+      setAppliedFilters({});
+      setReservations(data);
+      handleSearchChange(appliedSearch);
+    }
+
+    //Clear the filters
+    if (isEmpty(filters) && !appliedSearch) {
+      setReservations(data);
+      setAppliedFilters({});
+    }
+  };
+
+  // Sort function: just set the sortCriteria and let the filter function handle the sorting
+  const handleSortSubmit = (sortBy: string, sortOrder: string) => {
+    if (sortBy && sortOrder && reservations) {
+      const sortedReservations = [...reservations].sort((a: any, b: any) => {
         let aValue = a;
         let bValue = b;
 
@@ -97,19 +116,16 @@ const Reservations: React.FC<Iprops> = () => {
           return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
         }
       });
+
+      setReservations(sortedReservations);
     }
 
-    setReservations(filteredReservations);
-    setAppliedFilters(filters);
-  };
-
-  // Sort function: just set the sortCriteria and let the filter function handle the sorting
-  const handleSortSubmit = (sortBy: string, sortOrder: string) => {
-    setSortCriteria(`${sortBy}-${sortOrder}`);
+    // setSortCriteria(`${sortBy}-${sortOrder}`);
   };
 
   const handleSearchChange = (searchTerm: string) => {
     if (searchTerm) {
+      setAppliedSearch(searchTerm);
       setReservations(prevReservations => {
         return prevReservations?.filter((reservation: Reservation) => {
           const customerName = `${reservation.customer.firstName} ${reservation.customer.lastName}`;
@@ -117,23 +133,17 @@ const Reservations: React.FC<Iprops> = () => {
         });
       });
     } else {
-      if (appliedFilters) {
+      //Clear search
+      setAppliedSearch("");
+
+      if (!isEmpty(appliedFilters)) {
+        //If filters are applied, re-apply them when search is cleared
         handleFilterSubmit(appliedFilters);
       } else {
+        //Otherwise, just set the reservations to the original data
         setReservations(data);
       }
     }
-
-    // setReservations(() => {
-    //   if (searchTerm) {
-    //     return data?.filter((reservation: Reservation) => {
-    //       const customerName = `${reservation.customer.firstName} ${reservation.customer.lastName}`;
-    //       return customerName.toLowerCase().includes(searchTerm.toLowerCase());
-    //     });
-    //   } else {
-    //     return data;
-    //   }
-    // });
   };
 
   return (
