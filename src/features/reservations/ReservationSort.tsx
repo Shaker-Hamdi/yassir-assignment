@@ -1,8 +1,10 @@
 import React from "react";
 
-const ReservationSort: React.FC<{
+type Iprops = {
   onSortSubmit: (sortBy: string, sortOrder: string) => void;
-}> = ({ onSortSubmit }) => {
+};
+
+const ReservationSort: React.FC<Iprops> = ({ onSortSubmit }) => {
   const [sortOption, setSortOption] = React.useState<string>(""); // Format: "<sortBy>-<sortOrder>"
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

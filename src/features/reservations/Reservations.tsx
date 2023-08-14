@@ -1,11 +1,11 @@
-import clsx from "clsx";
 import { format, parse } from "date-fns";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Pagination from "../../components/ui/Pagination";
-import { FilterCriteria, MetadataObj, Reservation } from "../../types/apiTypes";
+import { MetadataObj, Reservation } from "../../types/apiTypes";
 import ReservationFilter from "./ReservationFilter";
+import ReservationSearch from "./ReservationSearch";
 import ReservationSort from "./ReservationSort";
 import ReservationsList from "./ReservationsList";
 import { useGetReservationsListQuery } from "./reservationsApiSlice";
@@ -22,28 +22,33 @@ const Reservations: React.FC<Iprops> = () => {
   const { data, isLoading, isSuccess } = useGetReservationsListQuery();
 
   useEffect(() => {
+    // Set reservations when data is fetched
     if (isSuccess && data) {
       setReservations(data);
     }
   }, [data, isSuccess]);
 
+  useEffect(() => {
+    // Initial filtering and sorting when component mounts
+    // Aslo runs when sortCriteria changes and passes the appliedFilters
+    // to sort the filtered reservations if filters are applied
+    handleFilterSubmit(appliedFilters || {});
+  }, [sortCriteria]);
+
   const indexOfLastReservation = currentPage * reservationsPerPage;
   const indexOfFirstReservation = indexOfLastReservation - reservationsPerPage;
-  const currentReservations = reservations?.slice(
-    indexOfFirstReservation,
-    indexOfLastReservation,
-  );
+  const currentReservations =
+    reservations?.slice(indexOfFirstReservation, indexOfLastReservation) || [];
+
+  // Paginagte function: Change page number
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  useEffect(() => {
-    console.log("Applied Filters", appliedFilters);
-    handleFilterSubmit(appliedFilters || {});
-  }, [sortCriteria]); // Initial filtering and sorting when component mounts
-
+  // Filter function: Filter reservations based on filter criteria
   const handleFilterSubmit = (filters: MetadataObj) => {
     setCurrentPage(1);
     let filteredReservations = data || [];
 
+    // Apply filters
     filteredReservations = filteredReservations.filter(
       (reservation: MetadataObj) => {
         return Object.keys(filters).every(key => {
@@ -98,9 +103,37 @@ const Reservations: React.FC<Iprops> = () => {
     setAppliedFilters(filters);
   };
 
+  // Sort function: just set the sortCriteria and let the filter function handle the sorting
   const handleSortSubmit = (sortBy: string, sortOrder: string) => {
-    const newSortCriteria = `${sortBy}-${sortOrder}`;
-    setSortCriteria(newSortCriteria);
+    setSortCriteria(`${sortBy}-${sortOrder}`);
+  };
+
+  const handleSearchChange = (searchTerm: string) => {
+    if (searchTerm) {
+      setReservations(prevReservations => {
+        return prevReservations?.filter((reservation: Reservation) => {
+          const customerName = `${reservation.customer.firstName} ${reservation.customer.lastName}`;
+          return customerName.toLowerCase().includes(searchTerm.toLowerCase());
+        });
+      });
+    } else {
+      if (appliedFilters) {
+        handleFilterSubmit(appliedFilters);
+      } else {
+        setReservations(data);
+      }
+    }
+
+    // setReservations(() => {
+    //   if (searchTerm) {
+    //     return data?.filter((reservation: Reservation) => {
+    //       const customerName = `${reservation.customer.firstName} ${reservation.customer.lastName}`;
+    //       return customerName.toLowerCase().includes(searchTerm.toLowerCase());
+    //     });
+    //   } else {
+    //     return data;
+    //   }
+    // });
   };
 
   return (
@@ -117,6 +150,9 @@ const Reservations: React.FC<Iprops> = () => {
             </div>
             <div>
               <ReservationSort onSortSubmit={handleSortSubmit} />
+            </div>
+            <div>
+              <ReservationSearch onSearchChange={handleSearchChange} />
             </div>
           </div>
           <ReservationsList reservations={currentReservations} />
