@@ -12,7 +12,7 @@ const ReservationSearch: React.FC<Iprops> = ({
 }) => {
   const [searchTerm, setSearchTerm] = React.useState<string>(""); // Format: "<sortBy>-<sortOrder>"
 
-  const handleSortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
     onSearchChange(event.target.value);
   };
@@ -27,7 +27,7 @@ const ReservationSearch: React.FC<Iprops> = ({
       <input
         type="text"
         value={searchTerm}
-        onChange={handleSortChange}
+        onChange={handleSearchChange}
         placeholder="Search by customer name ..."
         className={clsx("w-full")}
       />
