@@ -3,6 +3,7 @@ import { format, parse, set } from "date-fns";
 import { useEffect, useState } from "react";
 
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import NoResults from "../../components/ui/NoResults";
 import Pagination from "../../components/ui/Pagination";
 import { MetadataObj, Reservation } from "../../types/apiTypes";
 import { isEmpty } from "../../utils/helpers";
@@ -172,7 +173,11 @@ const Reservations: React.FC<Iprops> = () => {
             </div>
           </div>
 
-          <ReservationsList reservations={currentReservations} />
+          {reservations?.length === 0 ? (
+            <NoResults />
+          ) : (
+            <ReservationsList reservations={currentReservations} />
+          )}
 
           <Pagination
             currentPage={currentPage}
