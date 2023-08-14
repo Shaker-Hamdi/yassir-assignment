@@ -19,22 +19,15 @@ const Reservations: React.FC<Iprops> = () => {
   const [appliedSearch, setAppliedSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [reservationsPerPage, setReservationsPerPage] = useState<number>(5);
-  const [sortCriteria, setSortCriteria] = useState<string>("");
 
   const { data, isLoading, isSuccess } = useGetReservationsListQuery();
 
   useEffect(() => {
-    // Set reservations when data is fetched
+    // Set reservations locally when data is fetched
     if (isSuccess && data) {
       setReservations(data);
     }
   }, [data, isSuccess]);
-
-  // useEffect(() => {
-  //   // This runs on mount and when sortCriteria changes
-  //   // It passes the appliedFilters to sort the filtered reservations if filters are applied
-  //   handleFilterSubmit(appliedFilters);
-  // }, [sortCriteria]);
 
   const indexOfLastReservation = currentPage * reservationsPerPage;
   const indexOfFirstReservation = indexOfLastReservation - reservationsPerPage;
@@ -95,32 +88,31 @@ const Reservations: React.FC<Iprops> = () => {
     }
   };
 
-  // Sort function: just set the sortCriteria and let the filter function handle the sorting
   const handleSortSubmit = (sortBy: string, sortOrder: string) => {
     if (sortBy && sortOrder && reservations) {
-      const sortedReservations = [...reservations].sort((a: any, b: any) => {
-        let aValue = a;
-        let bValue = b;
+      const sortedReservations = [...reservations].sort(
+        (a: MetadataObj, b: MetadataObj) => {
+          let aValue: string | MetadataObj = a;
+          let bValue: string | MetadataObj = b;
 
-        if (sortBy === "customer") {
-          aValue = `${a.customer.firstName} ${a.customer.lastName}`;
-          bValue = `${b.customer.firstName} ${b.customer.lastName}`;
-        } else {
-          aValue = a[sortBy];
-          bValue = b[sortBy];
-        }
+          if (sortBy === "customer") {
+            aValue = `${a.customer.firstName} ${a.customer.lastName}`;
+            bValue = `${b.customer.firstName} ${b.customer.lastName}`;
+          } else {
+            aValue = a[sortBy];
+            bValue = b[sortBy];
+          }
 
-        if (sortOrder === "asc") {
-          return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-        } else {
-          return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-        }
-      });
+          if (sortOrder === "asc") {
+            return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+          } else {
+            return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+          }
+        },
+      );
 
       setReservations(sortedReservations);
     }
-
-    // setSortCriteria(`${sortBy}-${sortOrder}`);
   };
 
   const handleSearchChange = (searchTerm: string) => {

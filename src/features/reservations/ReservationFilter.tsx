@@ -1,4 +1,8 @@
+import * as Popover from "@radix-ui/react-popover";
+import clsx from "clsx";
 import { useState } from "react";
+
+import Icon from "../../components/ui/Icon";
 
 type Iprops = {
   onSubmit: (filters: any) => void;
@@ -9,6 +13,17 @@ const ReservationFilter: React.FC<Iprops> = ({ onSubmit }) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [shiftFilters, setShiftFilters] = useState<string[]>([]);
   const [areaFilters, setAreaFilters] = useState<string[]>([]);
+
+  const statusFilterOptions = [
+    "CONFIRMED",
+    "SEATED",
+    "CHECKED OUT",
+    "NOT CONFIRMED",
+  ];
+
+  const shiftFilterOptions = ["BREAKFAST", "LUNCH", "DINNER"];
+
+  const areFilterOptions = ["BAR", "MAIN ROOM"];
 
   const handleCheckboxChange = (
     filterName: string,
@@ -44,137 +59,91 @@ const ReservationFilter: React.FC<Iprops> = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <h3>Status</h3>
-        <label>
-          Confirmed
-          <input
-            type="checkbox"
-            checked={statusFilters.includes("CONFIRMED")}
-            onChange={() =>
-              handleCheckboxChange("CONFIRMED", statusFilters, setStatusFilters)
-            }
-          />
-        </label>
+    <>
+      <Popover.Root>
+        <Popover.Trigger asChild>
+          <button aria-label="Update dimensions">
+            <Icon iconName="filter_alt" />
+          </button>
+        </Popover.Trigger>
+        <Popover.Content
+          className={clsx("rounded-xl bg-white p-5 shadow-md")}
+          sideOffset={5}
+        >
+          <form onSubmit={handleSubmit}>
+            <div>
+              <h3>Status</h3>
+              {statusFilterOptions.map(status => (
+                <label key={status}>
+                  {status}
+                  <input
+                    type="checkbox"
+                    checked={statusFilters.includes(status)}
+                    onChange={() =>
+                      handleCheckboxChange(
+                        status,
+                        statusFilters,
+                        setStatusFilters,
+                      )
+                    }
+                  />
+                </label>
+              ))}
+            </div>
 
-        <label>
-          Seated
-          <input
-            type="checkbox"
-            checked={statusFilters.includes("SEATED")}
-            onChange={() =>
-              handleCheckboxChange("SEATED", statusFilters, setStatusFilters)
-            }
-          />
-        </label>
+            <div>
+              <h3>Shifts</h3>
+              {shiftFilterOptions.map(shift => (
+                <label key={shift}>
+                  {shift}
+                  <input
+                    type="checkbox"
+                    checked={shiftFilters.includes(shift)}
+                    onChange={() =>
+                      handleCheckboxChange(shift, shiftFilters, setShiftFilters)
+                    }
+                  />
+                </label>
+              ))}
+            </div>
 
-        <label>
-          Checked out
-          <input
-            type="checkbox"
-            checked={statusFilters.includes("CHECKED OUT")}
-            onChange={() =>
-              handleCheckboxChange(
-                "CHECKED OUT",
-                statusFilters,
-                setStatusFilters,
-              )
-            }
-          />
-        </label>
+            <div>
+              <h3>Area</h3>
+              {areFilterOptions.map(area => (
+                <label key={area}>
+                  {area}
+                  <input
+                    type="checkbox"
+                    checked={areaFilters.includes(area)}
+                    onChange={() =>
+                      handleCheckboxChange(area, areaFilters, setAreaFilters)
+                    }
+                  />
+                </label>
+              ))}
+            </div>
 
-        <label>
-          Not Confirmed
-          <input
-            type="checkbox"
-            checked={statusFilters.includes("NOT CONFIRMED")}
-            onChange={() =>
-              handleCheckboxChange(
-                "NOT CONFIRMED",
-                statusFilters,
-                setStatusFilters,
-              )
-            }
-          />
-        </label>
-      </div>
+            <div>
+              <h3>Reservation Day</h3>
+              <input
+                type="date"
+                value={selectedDate || ""}
+                onChange={e => setSelectedDate(e.target.value)}
+              />
+            </div>
 
-      <div>
-        <h3>Reservation Day</h3>
-        <input
-          type="date"
-          value={selectedDate || ""}
-          onChange={e => setSelectedDate(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <h3>Shifts</h3>
-        <label>
-          Breakfast
-          <input
-            type="checkbox"
-            checked={shiftFilters.includes("BREAKFAST")}
-            onChange={() =>
-              handleCheckboxChange("BREAKFAST", shiftFilters, setShiftFilters)
-            }
-          />
-        </label>
-
-        <label>
-          Lunch
-          <input
-            type="checkbox"
-            checked={shiftFilters.includes("LUNCH")}
-            onChange={() =>
-              handleCheckboxChange("LUNCH", shiftFilters, setShiftFilters)
-            }
-          />
-        </label>
-
-        <label>
-          Dinner
-          <input
-            type="checkbox"
-            checked={shiftFilters.includes("DINNER")}
-            onChange={() =>
-              handleCheckboxChange("DINNER", shiftFilters, setShiftFilters)
-            }
-          />
-        </label>
-      </div>
-
-      <div>
-        <h3>Area</h3>
-        <label>
-          Bar
-          <input
-            type="checkbox"
-            checked={areaFilters.includes("BAR")}
-            onChange={() =>
-              handleCheckboxChange("BAR", areaFilters, setAreaFilters)
-            }
-          />
-        </label>
-
-        <label>
-          Main Room
-          <input
-            type="checkbox"
-            checked={areaFilters.includes("MAIN ROOM")}
-            onChange={() =>
-              handleCheckboxChange("MAIN ROOM", areaFilters, setAreaFilters)
-            }
-          />
-        </label>
-      </div>
-
-      <button type="submit">Apply Filters</button>
-      <button type="button" onClick={handleClearFilters}>
-        Clear Filters
-      </button>
-    </form>
+            <button type="submit">Apply Filters</button>
+            <button type="button" onClick={handleClearFilters}>
+              Clear Filters
+            </button>
+          </form>
+          <Popover.Close aria-label="Close">
+            <Icon iconName="close" />
+          </Popover.Close>
+          <Popover.Arrow className={clsx("fill-gray-400")} />
+        </Popover.Content>
+      </Popover.Root>
+    </>
   );
 };
 
