@@ -9,7 +9,7 @@ const GloblaLayout: React.FC<Iprops> = () => {
   return (
     <div className="page flex-basis[100%] h-full flex-1">
       <Header />
-      <main className={clsx("container mx-auto")}>
+      <main className={clsx("container mx-auto px-5")}>
         <Outlet />
       </main>
     </div>

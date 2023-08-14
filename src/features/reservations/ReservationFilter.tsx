@@ -73,7 +73,7 @@ const ReservationFilter: React.FC<Iprops> = ({ onSubmit }) => {
           </button>
         </Popover.Trigger>
         <Popover.Content
-          className={clsx("rounded-xl bg-white p-5 shadow-md")}
+          className={clsx("relative z-50 rounded-xl bg-white p-5 shadow-md")}
           sideOffset={5}
           align="end"
         >
@@ -149,20 +149,31 @@ const ReservationFilter: React.FC<Iprops> = ({ onSubmit }) => {
             </div>
 
             <div className={clsx("mt-5 flex items-center justify-end gap-3")}>
-              <button type="button" onClick={handleClearFilters}>
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className={clsx(
+                  "flex h-11 items-center justify-center rounded-xl border border-violet-600 bg-white px-3 text-center text-violet-600 transition hover:bg-violet-100 hover:text-violet-900",
+                )}
+              >
                 Clear Filters
               </button>
               <button
                 type="submit"
                 className={clsx(
-                  "flex h-11 items-center justify-center rounded-xl border border-violet-600 bg-violet-600 px-3 text-center text-white transition hover:bg-white hover:text-violet-600",
+                  "flex h-11 items-center justify-center rounded-xl bg-violet-600 px-3 text-center text-white transition hover:bg-violet-800",
                 )}
               >
                 Apply Filters
               </button>
             </div>
           </form>
-          <Popover.Close aria-label="Close">
+          <Popover.Close
+            aria-label="Close"
+            className={clsx(
+              "absolute right-5 top-5 flex h-10 w-10 items-center justify-center text-gray-400 transition hover:bg-gray-100 hover:text-gray-500",
+            )}
+          >
             <Icon iconName="close" />
           </Popover.Close>
           <Popover.Arrow className={clsx("fill-gray-400")} />

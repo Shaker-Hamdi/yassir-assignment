@@ -23,7 +23,7 @@ const ReservationSearch: React.FC<Iprops> = ({
   };
 
   return (
-    <div className={clsx("relative flex-1")}>
+    <div className={clsx("relative md:col-span-6 lg:col-span-8")}>
       <input
         type="text"
         value={searchTerm}

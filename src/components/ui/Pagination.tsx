@@ -53,10 +53,10 @@ const Pagination: React.FC<Iprops> = ({
     return null;
   }
 
-  const buttonStyles = `flex h-9 w-9 items-center justify-center overflow-hidden rounded-full text-[15px] font-bold text-gray-500 transition hover:bg-gray-900 hover:text-white disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent`;
+  const buttonStyles = `flex h-9 w-9 items-center justify-center overflow-hidden rounded-full text-[15px] font-bold text-gray-500 transition hover:bg-violet-400 hover:text-white disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent`;
 
   return (
-    <ul className="flex">
+    <ul className="mt-10 flex items-center justify-center rounded-full bg-white p-5 shadow-md">
       <li>
         <button
           onClick={() => paginate(1)}
@@ -81,7 +81,7 @@ const Pagination: React.FC<Iprops> = ({
             <button
               onClick={() => paginate(number)}
               className={`${buttonStyles} ${
-                number === currentPage && "bg-gray-900 text-white"
+                number === currentPage && "bg-violet-600 text-white"
               }`}
             >
               {number}

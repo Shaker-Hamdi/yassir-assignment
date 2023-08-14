@@ -26,15 +26,9 @@
     @apply h-5 w-5 cursor-pointer rounded-md border border-gray-400 text-violet-600 focus:outline-none focus:ring-0 focus:ring-offset-0;
   }
 
-  body,
-  html,
-  #root {
-    @apply h-full overflow-hidden;
-  }
-
   body {
     scrollbar-gutter: auto;
-    @apply bg-gray-100 font-english text-base text-gray-700 antialiased;
+    @apply bg-gray-100 pb-20 font-english text-base text-gray-700 antialiased;
   }
 
   body::-webkit-scrollbar {

@@ -3,10 +3,9 @@ import React from "react";
 
 type Iprops = {
   onSortSubmit: (sortBy: string, sortOrder: string) => void;
-  resetSort?: boolean;
 };
 
-const ReservationSort: React.FC<Iprops> = ({ onSortSubmit, resetSort }) => {
+const ReservationSort: React.FC<Iprops> = ({ onSortSubmit }) => {
   const [sortOption, setSortOption] = React.useState<string>(""); // Format: "<sortBy>-<sortOrder>"
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -15,15 +14,13 @@ const ReservationSort: React.FC<Iprops> = ({ onSortSubmit, resetSort }) => {
     onSortSubmit(sortBy, sortOrder);
   };
 
-  React.useEffect(() => {
-    if (resetSort) {
-      setSortOption("");
-    }
-  }, [resetSort]);
-
   return (
-    <div className={clsx("")}>
-      <select value={sortOption} onChange={handleSortChange}>
+    <div className={clsx("flex-1")}>
+      <select
+        value={sortOption}
+        onChange={handleSortChange}
+        className={clsx("w-full")}
+      >
         <option value="">Sort By ...</option>
         <option value="quantity-asc">Quantity (Ascending)</option>
         <option value="quantity-desc">Quantity (Descending)</option>

@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { Reservation } from "../../types/apiTypes";
+import SingleReservation from "./SingleReservation";
 
 type Iprops = {
   reservations: Reservation[] | undefined;
@@ -8,25 +9,19 @@ type Iprops = {
 
 const ReservationsList: React.FC<Iprops> = ({ reservations }) => {
   return (
-    <table>
-      <tbody>
-        {reservations?.map(reservation => {
-          return (
-            <tr key={reservation.id}>
-              <td>{reservation.id}</td>
-              <td>{reservation.shift}</td>
-              <td>{reservation.status}</td>
-              <td>{reservation.businessDate}</td>
-              <td>{reservation.area}</td>
-              <td>{reservation.quantity}</td>
-              <td>
-                {reservation.customer.firstName} {reservation.customer.lastName}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <ul
+      className={clsx(
+        "mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+      )}
+    >
+      {reservations?.map(reservation => {
+        return (
+          <li key={reservation.id} className={clsx("w-full")}>
+            <SingleReservation reservation={reservation} />
+          </li>
+        );
+      })}
+    </ul>
   );
 };
 
